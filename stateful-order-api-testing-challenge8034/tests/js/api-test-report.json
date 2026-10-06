@@ -1,0 +1,134 @@
+{
+  "reportTitle": "Stateful Order API — Completed Sample Test Report",
+  "reportKind": "",
+  "isSampleStaticReport": true,
+  "note": ".",
+  "generatedAt": "",
+  "baseUrl": "http://localhost:3000",
+  "sampleState": {
+    "alice": {
+      "initialCredit": 100,
+      "orderExamples": [
+        "ord-a100",
+        "ord-a101"
+      ]
+    },
+    "bob": {
+      "initialCredit": 50,
+      "orderExample": "ord-b200"
+    }
+  },
+  "totalTests": 23,
+  "passed": 22,
+  "failed": 1,
+  "passRate": "95.7%",
+  "scenarioCounts": {
+    "positive": 4,
+    "negative": 8,
+    "boundary": 4,
+    "stateful": 6,
+    "contract_bug": 1
+  },
+  "tests": [
+    {
+      "id": "TC-AUTH-01",
+      "name": "POST /api/login — valid Alice login",
+      "type": "positive",
+      "status": "passed",
+      "expected": "200 with token",
+      "actual": "200; token returned",
+      "reason": "Token matches requested user.",
+      "durationMs": 8
+    },
+    {
+      "id": "TC-AUTH-02",
+      "name": "POST /api/login — valid Bob login",
+      "type": "positive",
+      "status": "passed",
+      "expected": "200 with token",
+      "actual": "200; token returned",
+      "reason": "Token matches requested user.",
+      "durationMs": 15
+    },
+    {
+      "id": "TC-ORD-01",
+      "name": "POST /api/order — Alice spends 30",
+      "type": "positive",
+      "status": "passed",
+      "expected": "201; orderId and newCredit=70",
+      "actual": "201; orderId=ord-a100, newCredit=70",
+      "reason": "Balance decremented from 100 to 70.",
+      "durationMs": 10
+    },
+    {
+      "id": "TC-ORD-02",
+      "name": "POST /api/order — spend exact remaining 70",
+      "type": "boundary",
+      "status": "passed",
+      "expected": "201; orderId and newCredit=0",
+      "actual": "201; orderId=ord-a101, newCredit=0",
+      "reason": "Zero remaining credit is permitted.",
+      "durationMs": 17
+    },
+    {
+      "id": "TC-LST-01",
+      "name": "GET /api/orders — query-token contract for Alice",
+      "type": "contract_bug",
+      "status": "failed",
+      "expected": "200 with orders array containing Alice orders",
+      "actual": "401 Invalid token",
+      "reason": "Contract sends token as query parameter; app.js reads a header value instead.",
+      "durationMs": 14
+    },
+    {
+      "id": "TC-LST-02",
+      "name": "GET /api/orders — invalid query token",
+      "type": "negative",
+      "status": "passed",
+      "expected": "401 Invalid token",
+      "actual": "401 Invalid token",
+      "reason": "Invalid token is rejected.",
+      "durationMs": 8
+    },
+    {
+      "id": "TC-CNC-01",
+      "name": "POST /api/order/cancel — cancel pending order; refund",
+      "type": "stateful",
+      "status": "passed",
+      "expected": "200; cancelled; newCredit=70",
+      "actual": "200; cancelled; newCredit=70",
+      "reason": "Pending order cancelled and amount refunded.",
+      "durationMs": 15
+    },
+    {
+      "id": "TC-CNC-02",
+      "name": "POST /api/order/cancel — repeat cancellation",
+      "type": "stateful",
+      "status": "passed",
+      "expected": "409 Order cannot be cancelled",
+      "actual": "409 Order cannot be cancelled",
+      "reason": "Duplicate refund prevented.",
+      "durationMs": 9
+    },
+    {
+      "id": "TC-CMP-01",
+      "name": "POST /api/order/complete — complete pending order",
+      "type": "stateful",
+      "status": "passed",
+      "expected": "200; status=completed",
+      "actual": "200; status=completed",
+      "reason": "Valid pending-to-completed transition.",
+      "durationMs": 17
+    },
+    {
+      "id": "TC-CMP-02",
+      "name": "POST /api/order/cancel — cancel completed order",
+      "type": "stateful",
+      "status": "passed",
+      "expected": "409 Order cannot be cancelled",
+      "actual": "409 Order cannot be cancelled",
+      "reason": "Completed order cannot be cancelled.",
+      "durationMs": 11
+    }
+  ]
+}
