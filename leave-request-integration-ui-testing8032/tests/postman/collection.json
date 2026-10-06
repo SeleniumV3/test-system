@@ -1,0 +1,652 @@
+{
+  "info": {
+    "name": "Leave Request - Stateful Integration Tests",
+    "_postman_id": "a1b2c3d4-e5f6-4a7b-8c9d-000000000001",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - Create Leave Request",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// requestId پویا در environment ذخیره می‌شود",
+              "pm.environment.set(\"requestId\", \"\")",
+              "pm.environment.set(\"createdRequestId\", \"\")"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const ts = Date.now();",
+              "const emp = \"emp-\" + ts;",
+              "pm.environment.set(\"employeeId\", emp);",
+              "pm.environment.set(\"fromDate\", \"2026-03-01\");",
+              "pm.environment.set(\"toDate\", \"2026-03-03\");",
+              "pm.environment.set(\"reason\", \"Integration test \" + ts);",
+              "",
+              "pm.test(\"Status is 201\", function(){ pm.response.to.have.status(201); });",
+              "const body = pm.response.json();",
+              "pm.test(\"requestId exists\", function(){ pm.expect(body).to.have.property(\"requestId\"); });",
+              "pm.test(\"state is PENDING\", function(){ pm.expect(body.state).to.eql(\"PENDING\"); });",
+              "pm.environment.set(\"requestId\", body.requestId);",
+              "pm.environment.set(\"createdRequestId\", body.requestId);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeId\": \"{{employeeId}}\",\n  \"fromDate\": \"{{fromDate}}\",\n  \"toDate\": \"{{toDate}}\",\n  \"reason\": \"{{reason}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/request",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "request"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2 - Get Detail",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test(\"state is PENDING\", function(){ pm.expect(body.state).to.eql(\"PENDING\"); });",
+              "pm.test(\"employeeId matches created data\", function(){ pm.expect(String(body.employeeId)).to.eql(pm.environment.get(\"employeeId\")); });",
+              "pm.test(\"id matches dynamic requestId\", function(){ pm.expect(pm.environment.get(\"requestId\")).to.not.be.null; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{requestId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{requestId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3 - Get History",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test(\"history exists\", function(){ pm.expect(body).to.have.property(\"history\"); });",
+              "const h = JSON.stringify(body.history);",
+              "pm.test(\"history contains PENDING\", function(){ pm.expect(h).to.include(\"PENDING\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{requestId}}/history",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{requestId}}",
+            "history"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4 - Approve",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test(\"state is APPROVED\", function(){ pm.expect(body.state).to.eql(\"APPROVED\"); });",
+              "pm.test(\"requestId matches\", function(){ pm.expect(body.requestId).to.eql(pm.environment.get(\"requestId\")); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{requestId}}/approve",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{requestId}}",
+            "approve"
+          ]
+        }
+      }
+    },
+    {
+      "name": "5 - Second Approve",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 409\", function(){ pm.response.to.have.status(409); });",
+              "const b=pm.response.json();",
+              "pm.test(\"error message\", function(){ pm.expect(b).to.have.property(\"error\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{requestId}}/approve",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{requestId}}",
+            "approve"
+          ]
+        }
+      }
+    },
+    {
+      "name": "6 - Reject after Approve",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 409\", function(){ pm.response.to.have.status(409); });",
+              "const b=pm.response.json();",
+              "pm.test(\"error message\", function(){ pm.expect(b).to.have.property(\"error\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{requestId}}/reject",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{requestId}}",
+            "reject"
+          ]
+        }
+      }
+    },
+    {
+      "name": "7 - Cancel after Approve",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 409\", function(){ pm.response.to.have.status(409); });",
+              "const b=pm.response.json();",
+              "pm.test(\"error message\", function(){ pm.expect(b).to.have.property(\"error\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{requestId}}/cancel",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{requestId}}",
+            "cancel"
+          ]
+        }
+      }
+    },
+    {
+      "name": "8 - Create for Reject flow",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 201\", function(){ pm.response.to.have.status(201); });",
+              "const b=pm.response.json();",
+              "pm.environment.set(\"rejectRequestId\", b.requestId);",
+              "pm.test(\"state PENDING\", function(){ pm.expect(b.state).to.eql(\"PENDING\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeId\": \"{{employeeId}}-rj\",\n  \"fromDate\": \"{{fromDate}}\",\n  \"toDate\": \"{{toDate}}\",\n  \"reason\": \"reject flow\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/request",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "request"
+          ]
+        }
+      }
+    },
+    {
+      "name": "9 - Reject",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "const b=pm.response.json();",
+              "pm.test(\"state REJECTED\", function(){ pm.expect(b.state).to.eql(\"REJECTED\"); });",
+              "pm.environment.set(\"rejectedId\", b.requestId);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{rejectRequestId}}/reject",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{rejectRequestId}}",
+            "reject"
+          ]
+        }
+      }
+    },
+    {
+      "name": "10 - Approve after Reject",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 409\", function(){ pm.response.to.have.status(409); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{rejectRequestId}}/approve",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{rejectRequestId}}",
+            "approve"
+          ]
+        }
+      }
+    },
+    {
+      "name": "11 - Create for Cancel flow",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 201\", function(){ pm.response.to.have.status(201); });",
+              "const b=pm.response.json();",
+              "pm.environment.set(\"cancelRequestId\", b.requestId);",
+              "pm.test(\"state PENDING\", function(){ pm.expect(b.state).to.eql(\"PENDING\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeId\": \"{{employeeId}}-cn\",\n  \"fromDate\": \"{{fromDate}}\",\n  \"toDate\": \"{{toDate}}\",\n  \"reason\": \"cancel flow\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/request",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "request"
+          ]
+        }
+      }
+    },
+    {
+      "name": "12 - Cancel",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "const b=pm.response.json();",
+              "pm.test(\"state CANCELLED\", function(){ pm.expect(b.state).to.eql(\"CANCELLED\"); });",
+              "pm.environment.set(\"cancelledId\", b.requestId);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{cancelRequestId}}/cancel",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{cancelRequestId}}",
+            "cancel"
+          ]
+        }
+      }
+    },
+    {
+      "name": "13 - Cancel again",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 409\", function(){ pm.response.to.have.status(409); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/{{cancelRequestId}}/cancel",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "{{cancelRequestId}}",
+            "cancel"
+          ]
+        }
+      }
+    },
+    {
+      "name": "14 - Invalid ID detail",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 404\", function(){ pm.response.to.have.status(404); });",
+              "const b=pm.response.json();",
+              "pm.test(\"error\", function(){ pm.expect(b).to.have.property(\"error\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/nonexistent-id-123",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "nonexistent-id-123"
+          ]
+        }
+      }
+    },
+    {
+      "name": "15 - Invalid ID approve",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 404\", function(){ pm.response.to.have.status(404); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/nonexistent-id-123/approve",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "nonexistent-id-123",
+            "approve"
+          ]
+        }
+      }
+    },
+    {
+      "name": "16 - Incomplete body",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status is 400\", function(){ pm.response.to.have.status(400); });",
+              "const b=pm.response.json();",
+              "pm.test(\"error\", function(){ pm.expect(b).to.have.property(\"error\"); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeId\": \"\",\n  \"fromDate\": \"\",\n  \"toDate\": \"\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/leave/request",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "leave",
+            "request"
+          ]
+        }
+      }
+    }
+  ]
+}
