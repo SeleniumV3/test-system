@@ -1,3 +1,4 @@
+ساختار و فولدرهاتون باید به این شکل باشد
 
 tests/postman/collection.json
 tests/postman/environment.json
