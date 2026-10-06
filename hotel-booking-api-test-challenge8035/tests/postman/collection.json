@@ -1,0 +1,943 @@
+{
+  "info": {
+    "_postman_id": "d7fc7254-11da-5dfc-943e-4e836d4b48bc",
+    "name": "Hotel Booking API",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "missingBookingId",
+      "value": "00000000-0000-4000-8000-000000000000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Reset state",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.unset('bookingId'); pm.environment.unset('bookingId102');"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.unset('bookingId'); pm.environment.unset('bookingId102');",
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().ok).to.eql(true);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/reset",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reset"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "01 - Room 101 initially available",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().status).to.eql('available');",
+              "pm.expect(pm.response.json().booking).to.eql(null);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/room/101",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "room",
+            "101"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Reserve room 101",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(201);",
+              "pm.expect(pm.response.json().status).to.eql('reserved');",
+              "pm.expect(pm.response.json().bookingId).to.be.a('string').and.not.empty; pm.environment.set('bookingId', pm.response.json().bookingId);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/reserve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reserve"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"roomId\":\"101\",\"user\":\"regression-user-101\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Booking 101 status is reserved",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId'));",
+              "pm.expect(pm.response.json().status).to.eql('reserved');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/status/{{bookingId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "status",
+            "{{bookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Room 101 linked to booking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().status).to.eql('reserved');",
+              "pm.expect(pm.response.json().booking).to.eql(pm.environment.get('bookingId'));",
+              "pm.expect(pm.response.json().roomId).to.eql('101');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/room/101",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "room",
+            "101"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Duplicate reservation is rejected",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(409);",
+              "pm.expect(pm.response.json().error).to.eql('Room not available');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/reserve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reserve"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"roomId\":\"101\",\"user\":\"duplicate-user\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06 - Pay booking 101",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId'));",
+              "pm.expect(pm.response.json().status).to.eql('paid');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/pay",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "pay"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "07 - Booking 101 status is paid",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId'));",
+              "pm.expect(pm.response.json().status).to.eql('paid');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/status/{{bookingId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "status",
+            "{{bookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "08 - Room 101 is occupied",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().status).to.eql('occupied');",
+              "pm.expect(pm.response.json().booking).to.eql(pm.environment.get('bookingId'));",
+              "pm.expect(pm.response.json().roomId).to.eql('101');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/room/101",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "room",
+            "101"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "09 - Second payment is rejected",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(409);",
+              "pm.expect(pm.response.json().error).to.eql('Booking not in reservable state');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/pay",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "pay"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "10 - Cancelling paid booking is rejected",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(409);",
+              "pm.expect(pm.response.json().error).to.eql('Cannot cancel after payment');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cancel",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cancel"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "11 - Reserve room 102",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(201);",
+              "pm.expect(pm.response.json().status).to.eql('reserved');",
+              "pm.expect(pm.response.json().bookingId).to.be.a('string').and.not.empty; pm.environment.set('bookingId102', pm.response.json().bookingId);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/reserve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reserve"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"roomId\":\"102\",\"user\":\"regression-user-102\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "12 - Booking 102 status is reserved",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId102'));",
+              "pm.expect(pm.response.json().status).to.eql('reserved');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/status/{{bookingId102}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "status",
+            "{{bookingId102}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "13 - Room 102 linked to booking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().status).to.eql('reserved');",
+              "pm.expect(pm.response.json().booking).to.eql(pm.environment.get('bookingId102'));",
+              "pm.expect(pm.response.json().roomId).to.eql('102');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/room/102",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "room",
+            "102"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "14 - Cancel reserved booking 102",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId102'));",
+              "pm.expect(pm.response.json().status).to.eql('cancelled');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cancel",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cancel"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"bookingId\":\"{{bookingId102}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "15 - Booking 102 status is cancelled",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId102'));",
+              "pm.expect(pm.response.json().status).to.eql('cancelled');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/status/{{bookingId102}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "status",
+            "{{bookingId102}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "16 - Room 102 is available again",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(200);",
+              "pm.expect(pm.response.json().status).to.eql('available');",
+              "pm.expect(pm.response.json().booking).to.eql(null);",
+              "pm.expect(pm.response.json().roomId).to.eql('102');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/room/102",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "room",
+            "102"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "17 - Unknown booking status returns 404",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(404);",
+              "pm.expect(pm.response.json().error).to.eql('Booking not found');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/status/{{missingBookingId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "status",
+            "{{missingBookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "18 - Payment for unknown booking returns 404",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(404);",
+              "pm.expect(pm.response.json().error).to.eql('Booking not found');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/pay",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "pay"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"bookingId\":\"{{missingBookingId}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "19 - Unknown room returns 404",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// No per-request setup required."
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.expect(pm.response.code).to.eql(404);",
+              "pm.expect(pm.response.json().error).to.eql('Room not found');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/room/999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "room",
+            "999"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

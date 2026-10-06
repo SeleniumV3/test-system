@@ -1,0 +1,33 @@
+{
+  "id": "114637e0-7c8d-5257-871a-37276afd21ee",
+  "name": "Hotel Booking API",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "bookingId102",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "missingBookingId",
+      "value": "00000000-0000-4000-8000-000000000000",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2026-10-06T12:00:00.000Z",
+  "_postman_exported_using": "Postman/11"
+}

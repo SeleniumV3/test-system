@@ -1,0 +1,1356 @@
+{
+  "collection": {
+    "name": "Hotel Booking API",
+    "id": "d7fc7254-11da-5dfc-943e-4e836d4b48bc"
+  },
+  "environment": {
+    "name": "Hotel Booking API",
+    "id": "hotel-booking-api-test-challenge8035-environment"
+  },
+  "globals": {
+    "name": "Globals",
+    "id": "globals"
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 20,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 40,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequest-scripts": {
+        "total": 20,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 20,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 20,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 58,
+        "pending": 0,
+        "failed": 0
+      },
+      "test-scripts": {
+        "total": 20,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "started": "2026-10-06T12:00:00.000Z",
+      "completed": "2026-10-06T12:00:02.400Z",
+      "responseMin": 7,
+      "responseMax": 15,
+      "responseAverage": 105
+    },
+    "failures": [],
+    "executions": [
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 0,
+          "length": 20,
+          "position": 0
+        },
+        "item": {
+          "id": "00 - Reset state",
+          "name": "00 - Reset state",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/reset",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/reset",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-00",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"ok\":true}",
+          "responseTime": 7,
+          "responseSize": 11
+        },
+        "id": "0",
+        "assertions": [
+          {
+            "assertion": "pm.environment.unset('bookingId'); pm.environment.unset('bookingId102');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().ok).to.eql(true);",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 1,
+          "length": 20,
+          "position": 1
+        },
+        "item": {
+          "id": "01 - Room 101 initially available",
+          "name": "01 - Room 101 initially available",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/room/101",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/room/101",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-01",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"roomId\":\"101\",\"status\":\"available\",\"booking\":null}",
+          "responseTime": 8,
+          "responseSize": 52
+        },
+        "id": "1",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('available');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().booking).to.eql(null);",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 2,
+          "length": 20,
+          "position": 2
+        },
+        "item": {
+          "id": "02 - Reserve room 101",
+          "name": "02 - Reserve room 101",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/reserve",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"roomId\":\"101\",\"user\":\"regression-user-101\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/reserve",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"roomId\":\"101\",\"user\":\"regression-user-101\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-02",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"11111111-1111-4111-8111-111111111101\",\"status\":\"reserved\"}",
+          "responseTime": 9,
+          "responseSize": 72
+        },
+        "id": "2",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(201);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('reserved');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.be.a('string').and.not.empty; pm.environment.set('bookingId', pm.response.json().bookingId);",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 3,
+          "length": 20,
+          "position": 3
+        },
+        "item": {
+          "id": "03 - Booking 101 status is reserved",
+          "name": "03 - Booking 101 status is reserved",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/status/11111111-1111-4111-8111-111111111101",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/status/11111111-1111-4111-8111-111111111101",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-03",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"11111111-1111-4111-8111-111111111101\",\"status\":\"reserved\"}",
+          "responseTime": 10,
+          "responseSize": 72
+        },
+        "id": "3",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('reserved');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 4,
+          "length": 20,
+          "position": 4
+        },
+        "item": {
+          "id": "04 - Room 101 linked to booking",
+          "name": "04 - Room 101 linked to booking",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/room/101",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/room/101",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-04",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"roomId\":\"101\",\"status\":\"reserved\",\"booking\":\"11111111-1111-4111-8111-111111111101\"}",
+          "responseTime": 11,
+          "responseSize": 85
+        },
+        "id": "4",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('reserved');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().booking).to.eql(pm.environment.get('bookingId'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().roomId).to.eql('101');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 5,
+          "length": 20,
+          "position": 5
+        },
+        "item": {
+          "id": "05 - Duplicate reservation is rejected",
+          "name": "05 - Duplicate reservation is rejected",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/reserve",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"roomId\":\"101\",\"user\":\"duplicate-user\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/reserve",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"roomId\":\"101\",\"user\":\"duplicate-user\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-05",
+          "status": "Conflict",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"error\":\"Room not available\"}",
+          "responseTime": 12,
+          "responseSize": 30
+        },
+        "id": "5",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(409);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().error).to.eql('Room not available');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 6,
+          "length": 20,
+          "position": 6
+        },
+        "item": {
+          "id": "06 - Pay booking 101",
+          "name": "06 - Pay booking 101",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/pay",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/pay",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-06",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"11111111-1111-4111-8111-111111111101\",\"status\":\"paid\"}",
+          "responseTime": 13,
+          "responseSize": 68
+        },
+        "id": "6",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('paid');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 7,
+          "length": 20,
+          "position": 7
+        },
+        "item": {
+          "id": "07 - Booking 101 status is paid",
+          "name": "07 - Booking 101 status is paid",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/status/11111111-1111-4111-8111-111111111101",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/status/11111111-1111-4111-8111-111111111101",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-07",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"11111111-1111-4111-8111-111111111101\",\"status\":\"paid\"}",
+          "responseTime": 14,
+          "responseSize": 68
+        },
+        "id": "7",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('paid');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 8,
+          "length": 20,
+          "position": 8
+        },
+        "item": {
+          "id": "08 - Room 101 is occupied",
+          "name": "08 - Room 101 is occupied",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/room/101",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/room/101",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-08",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"roomId\":\"101\",\"status\":\"occupied\",\"booking\":\"11111111-1111-4111-8111-111111111101\"}",
+          "responseTime": 15,
+          "responseSize": 85
+        },
+        "id": "8",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('occupied');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().booking).to.eql(pm.environment.get('bookingId'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().roomId).to.eql('101');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 9,
+          "length": 20,
+          "position": 9
+        },
+        "item": {
+          "id": "09 - Second payment is rejected",
+          "name": "09 - Second payment is rejected",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/pay",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/pay",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-09",
+          "status": "Conflict",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"error\":\"Booking not in reservable state\"}",
+          "responseTime": 7,
+          "responseSize": 43
+        },
+        "id": "9",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(409);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().error).to.eql('Booking not in reservable state');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 10,
+          "length": 20,
+          "position": 10
+        },
+        "item": {
+          "id": "10 - Cancelling paid booking is rejected",
+          "name": "10 - Cancelling paid booking is rejected",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/cancel",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/cancel",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"bookingId\":\"{{bookingId}}\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-10",
+          "status": "Conflict",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"error\":\"Cannot cancel after payment\"}",
+          "responseTime": 8,
+          "responseSize": 39
+        },
+        "id": "10",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(409);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().error).to.eql('Cannot cancel after payment');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 11,
+          "length": 20,
+          "position": 11
+        },
+        "item": {
+          "id": "11 - Reserve room 102",
+          "name": "11 - Reserve room 102",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/reserve",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"roomId\":\"102\",\"user\":\"regression-user-102\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/reserve",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"roomId\":\"102\",\"user\":\"regression-user-102\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-11",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"22222222-2222-4222-8222-222222222102\",\"status\":\"reserved\"}",
+          "responseTime": 9,
+          "responseSize": 72
+        },
+        "id": "11",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(201);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('reserved');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.be.a('string').and.not.empty; pm.environment.set('bookingId102', pm.response.json().bookingId);",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 12,
+          "length": 20,
+          "position": 12
+        },
+        "item": {
+          "id": "12 - Booking 102 status is reserved",
+          "name": "12 - Booking 102 status is reserved",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/status/22222222-2222-4222-8222-222222222102",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/status/22222222-2222-4222-8222-222222222102",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-12",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"22222222-2222-4222-8222-222222222102\",\"status\":\"reserved\"}",
+          "responseTime": 10,
+          "responseSize": 72
+        },
+        "id": "12",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId102'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('reserved');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 13,
+          "length": 20,
+          "position": 13
+        },
+        "item": {
+          "id": "13 - Room 102 linked to booking",
+          "name": "13 - Room 102 linked to booking",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/room/102",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/room/102",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-13",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"roomId\":\"102\",\"status\":\"reserved\",\"booking\":\"22222222-2222-4222-8222-222222222102\"}",
+          "responseTime": 11,
+          "responseSize": 85
+        },
+        "id": "13",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('reserved');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().booking).to.eql(pm.environment.get('bookingId102'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().roomId).to.eql('102');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 14,
+          "length": 20,
+          "position": 14
+        },
+        "item": {
+          "id": "14 - Cancel reserved booking 102",
+          "name": "14 - Cancel reserved booking 102",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/cancel",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bookingId\":\"{{bookingId102}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/cancel",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"bookingId\":\"{{bookingId102}}\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-14",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"22222222-2222-4222-8222-222222222102\",\"status\":\"cancelled\"}",
+          "responseTime": 12,
+          "responseSize": 73
+        },
+        "id": "14",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId102'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('cancelled');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 15,
+          "length": 20,
+          "position": 15
+        },
+        "item": {
+          "id": "15 - Booking 102 status is cancelled",
+          "name": "15 - Booking 102 status is cancelled",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/status/22222222-2222-4222-8222-222222222102",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/status/22222222-2222-4222-8222-222222222102",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-15",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"bookingId\":\"22222222-2222-4222-8222-222222222102\",\"status\":\"cancelled\"}",
+          "responseTime": 13,
+          "responseSize": 73
+        },
+        "id": "15",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().bookingId).to.eql(pm.environment.get('bookingId102'));",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('cancelled');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 16,
+          "length": 20,
+          "position": 16
+        },
+        "item": {
+          "id": "16 - Room 102 is available again",
+          "name": "16 - Room 102 is available again",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/room/102",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/room/102",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-16",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"roomId\":\"102\",\"status\":\"available\",\"booking\":null}",
+          "responseTime": 14,
+          "responseSize": 52
+        },
+        "id": "16",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(200);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().status).to.eql('available');",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().booking).to.eql(null);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().roomId).to.eql('102');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 17,
+          "length": 20,
+          "position": 17
+        },
+        "item": {
+          "id": "17 - Unknown booking status returns 404",
+          "name": "17 - Unknown booking status returns 404",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/status/00000000-0000-4000-8000-000000000000",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/status/00000000-0000-4000-8000-000000000000",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-17",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"error\":\"Booking not found\"}",
+          "responseTime": 15,
+          "responseSize": 29
+        },
+        "id": "17",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(404);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().error).to.eql('Booking not found');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 18,
+          "length": 20,
+          "position": 18
+        },
+        "item": {
+          "id": "18 - Payment for unknown booking returns 404",
+          "name": "18 - Payment for unknown booking returns 404",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:3000/api/pay",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bookingId\":\"{{missingBookingId}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:3000/api/pay",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"bookingId\":\"{{missingBookingId}}\"}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "sample-response-18",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"error\":\"Booking not found\"}",
+          "responseTime": 7,
+          "responseSize": 29
+        },
+        "id": "18",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(404);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().error).to.eql('Booking not found');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      },
+      {
+        "cursor": {
+          "iteration": 0,
+          "item": 19,
+          "length": 20,
+          "position": 19
+        },
+        "item": {
+          "id": "19 - Unknown room returns 404",
+          "name": "19 - Unknown room returns 404",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:3000/api/room/999",
+            "header": [],
+            "body": null
+          }
+        },
+        "request": {
+          "method": "GET",
+          "url": "http://localhost:3000/api/room/999",
+          "header": [],
+          "body": null
+        },
+        "response": {
+          "id": "sample-response-19",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"error\":\"Room not found\"}",
+          "responseTime": 8,
+          "responseSize": 26
+        },
+        "id": "19",
+        "assertions": [
+          {
+            "assertion": "pm.expect(pm.response.code).to.eql(404);",
+            "error": null
+          },
+          {
+            "assertion": "pm.expect(pm.response.json().error).to.eql('Room not found');",
+            "error": null
+          }
+        ],
+        "skipped": false
+      }
+    ],
+    "summary": "",
+    "sampleMetadata": {
+      "synthetic": true,
+      "executionDate": "2026-10-06",
+      "requestCount": 20,
+      "assertionCount": 58,
+      "note": ""
+    }
+  }
+}
