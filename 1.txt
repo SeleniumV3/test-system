@@ -1,12 +1,1 @@
-ساختار و فولدرهاتون باید به این شکل باشد
 
-tests/postman/collection.json
-tests/postman/environment.json
-tests/postman/newman-report.json
-
-tests/Report.md
-ساختم
-
-
-بردارم؟
-بله اکی
