@@ -1,7 +1,6 @@
-start.bat
-یکبار اجرا کنین
-داخل فولدر پروژه همیشه هست
-اجرا کردم
 
+tests/postman/collection.json
+tests/postman/environment.json
+tests/postman/newman-report.json
 
-ok
+tests/Report.md
